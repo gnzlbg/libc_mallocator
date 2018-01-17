@@ -1,0 +1,37 @@
+language: rust
+rust: nightly
+sudo: false
+
+matrix:
+  include:
+    - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
+    - env: TARGET=i686-unknown-linux-gnu
+      addons:
+        apt:
+          packages:
+            - gcc-multilib
+      after_success:
+        - travis-cargo doc-upload
+    - os: osx
+      env: TARGET=x86_64-apple-darwin NO_ADD=1
+    - os: osx
+      env: TARGET=i686-apple-darwin
+    - env: TARGET=x86_64-unknown-linux-gnu NO_ADD=1
+      install: pip install 'travis-cargo<0.2' --user && export PATH=$HOME/.local/bin:$PATH
+      script: cargo doc
+      after_success:
+        - travis-cargo --only nightly doc-upload
+
+script:
+  - if [ -z "$NO_ADD" ]; then rustup target add $TARGET; fi
+  - cargo run --target $TARGET --manifest-path systest/Cargo.toml
+  - cargo build --target $TARGET
+  - cargo test --target $TARGET
+  - cargo build --release --target $TARGET
+  - cargo test --release --target $TARGET
+env:
+  global:
+  - secure: "CBkbWUVQ1pvKRYqgbpqmNnvpOXgmlyNoeprMhIQjNIDfKh/CW0EPeso2IvbgfwJFGPWwcmmwdl1K8NXR0J9oIGY0VD449p4K4ZAHV9W0TMoTfth5LNrls7NNQxMEABl7U/3mAEFpK1SxwS/CWCtHhGrOnZlLsbabTERJkHYK+ui9RFb8NYhwxm5me3GSEdTc3JNQ/4DfNaBEIcus67xY3FQU0VphkTDxhDOHnGzgj4+fU9UWldvdkWru9in2D4mmT82FZSPOKBQpRTe5twaTxPDvAU4uFanIw3G1Hxl5/m9EYkMx1ppwOLswp4DZxzVdcJbk/k7ZKcz5FSZVckoRx3C6O8ItHe0prNRp2YUbVY2P+1TOyuKISq5P1cEtGQW+K4cNtBD/sg68HUzJpcemG/5CYJpsHK2yLPV0F/oJLpdP7kqlatYFCg/mpoO/sgjUD6ChhghMm/JR/Ifcfdfic8t8gLm9tRxL4axek2sNNXMi7GDlnM8rIfOCdr8SIFDu53hyovZb7MDzLleeV66CIKpMqluDFThkb4dvuzeGyIDXnJRd9bRaMCGSw2qPX+Iyhm4vnPhYfHmcV9/C0nlqrTJTuDnrNGvjv6umIHK92mTaasjwIpnCaJ6kGAZq/COgz/bHU8XB4/Z3DPe7pnq+9qR4GwdybgeCp2raKey/WZI="
+notifications:
+  email:
+    on_success: never
