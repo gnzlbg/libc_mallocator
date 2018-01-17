@@ -2,6 +2,17 @@
 name = "libc-mallocator"
 version = "0.1.0"
 authors = ["gnzlbg <gonzalobg88@gmail.com>"]
+license = "MIT/Apache-2.0"
+readme = "README.md"
+keywords = ["allocator"]
+repository = "https://github.com/gnzlbg/libc_mallocator"
+homepage = "https://github.com/gnzlbg/libc_mallocator"
+documentation = "https://docs.rs/libc_mallocator"
+description = "A Rust allocator (unstable API) backed by libc's malloc"
+
+[lib]
+test = false
+bench = false
 
 [dependencies]
 libc = "0.2.*"

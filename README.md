@@ -4,9 +4,10 @@
 
 [Documentation](https://docs.rs/libc_mallocator)
 
-A Rust allocator (unstable API) that links to libc and forces all Rust allocations to use the system's malloc-based allocator.
+> A Rust allocator (unstable API) backed by libc's malloc.
 
-Usage:
+
+# Example
 
 ```toml
 # Cargo.toml
@@ -14,15 +15,17 @@ Usage:
 libc_mallocator = "0.1"
 ```
 
-Rust:
+Add
 
 ```rust
 #![feature(global_allocator)]
 extern crate libc_mallocator;
 
 #[global_allocator]
-static ALLOC: jemallocator::LibcMalloc = libc_mallocator::LibcMalloc;
+static ALLOC: libc_mallocator::LibcMalloc = libc_mallocator::LibcMalloc;
 ```
+
+to make `libc_mallocator::LibcMalloc` the system's allocator in your program.
 
 # License
 
